@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,49 +8,146 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/music_shed.styles.css" asp-append-version="true" />
+    <style>
+        .bg-indigo {
+            background-color: #4B0082 !important;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: #f0f0f0 !important;
+            font-weight: 500;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #FFB400 !important;
+        }
+
+        .btn-outline-primary {
+            color: #4B0082;
+            border-color: #4B0082;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #4B0082;
+            color: #fff;
+        }
+
+        .footer {
+            background-color: #4B0082;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-indigo shadow mb-3">
             <div class="container-fluid">
-                <!-- Logo -->
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">music_shed</a>
+                @{
+                    var perfil = Context.Session.GetString("Perfil");
+                }
 
-                <!-- Botão sempre visível (Login/Logout) -->
-                <div class="d-flex align-items-center order-sm-last ms-auto">
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <a class="btn btn-outline-danger btn-sm" asp-controller="Logins" asp-action="Sair">Sair</a>
-                    }
-                    else
-                    {
-                        <a class="btn btn-outline-primary btn-sm d-flex align-items-center" asp-controller="Logins" asp-action="Entrar">
-                            <i class="bi bi-google me-2"></i> Login
-                        </a>
-                    }
-                </div>
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-music-note-beamed me-2 fs-4 text-warning"></i> MusicShed
+                </a>
 
-                <!-- Botão do menu hamburguer -->
-                <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPrincipal"
-                        aria-controls="navbarPrincipal" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPrincipal">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Itens da navbar (dentro do hamburguer) -->
                 <div class="collapse navbar-collapse" id="navbarPrincipal">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Página Inicial</a>
                         </li>
+                        @if (string.IsNullOrEmpty(perfil) || perfil == "Administrador")
+                        {
+                            <li class="nav-item">
+                                @if (perfil == "Administrador")
+                                {
+                                    <a class="nav-link" asp-controller="Usuarios" asp-action="Lista">
+                                        <i class="bi bi-shield-lock"></i> Administração
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link" asp-controller="Logins" asp-action="LoginAdmin">
+                                        <i class="bi bi-shield-lock"></i> Administração
+                                    </a>
+                                }
+                            </li>
+                        }
+                        @if (!string.IsNullOrEmpty(perfil))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Usuarios" asp-action="Editar" asp-route-id="@Context.Session.GetInt32("UsuarioId")">
+                                    <i class="bi bi-pencil-square"></i> Alterar seus dados
+                                </a>
+                            </li>
+                            @if (perfil == "Professor" || perfil == "Administrador")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="AgendasDisponiveis" asp-action="Index">
+                                        <i class="bi bi-calendar-check"></i> Gerenciamento de Agendas
+                                    </a>
+                                </li>
+                            }
+                            else if (perfil == "Aluno")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="AgendasDisponiveis" asp-action="MinhasAulas">
+                                        <i class="bi bi-calendar-event"></i> Minhas Aulas
+                                    </a>
+                                </li>
+                            }
+                            @if (perfil == "Professor")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="AlunosPorProfessor" asp-action="Associar">
+                                        <i class="bi bi-person-lines-fill"></i> Meus Alunos
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="AgendasDisponiveis" asp-action="Pendentes">
+                                        <i class="bi bi-inbox"></i> Solicitações Pendentes
+                                    </a>
+                                </li>
+                            }
+                            @if (perfil == "Administrador")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="ConfiguracoesGlobais" asp-action="Editar">
+                                        <i class="bi bi-gear"></i> Configurações Globais
+                                    </a>
+                                </li>
+                            }
+                        }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Privacy">
+                                Política de Privacidade
+                            </a>
                         </li>
                     </ul>
-
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    <div class="d-flex align-items-center ms-auto">
+                        @if (string.IsNullOrEmpty(perfil))
+                        {
+                            <a class="btn btn-outline-primary btn-sm d-flex align-items-center" asp-controller="Logins" asp-action="EscolherPerfil">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-danger btn-sm" asp-controller="Logins" asp-action="Sair">Sair</a>
+                        }
+                    </div>
+                    @if (!string.IsNullOrEmpty(perfil))
                     {
-                        <!-- Saudação visível apenas em telas médias ou maiores -->
-                        <span class="navbar-text d-none d-sm-block">
+                        <span class="navbar-text d-none d-sm-block ms-3">
                             Olá, @Context.Session.GetString("NomeUsuario")!
                         </span>
                     }
@@ -65,9 +162,10 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer border-top py-3">
         <div class="container">
-            &copy; 2025 - music_shed - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - music_shed -
+            <a asp-controller="Home" asp-action="Privacy" class="text-white text-decoration-underline">Política de Privacidade</a>
         </div>
     </footer>
 

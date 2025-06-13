@@ -1,0 +1,78 @@
+@model IEnumerable<music_shed.Models.SolicitacaoReagendamento>
+
+@{
+    ViewData["Title"] = "Solicitações de Reagendamento Pendentes";
+}
+
+<div class="container mt-5 mb-5">
+    <h2 class="text-indigo fw-bold mb-4">
+        <i class="bi bi-journal-text me-2"></i> Solicitações de Reagendamento
+    </h2>
+
+    @* Mensagens de feedback *@
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show text-center shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["MensagemSucesso"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+    }
+    @if (TempData["MensagemErro"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show text-center shadow-sm" role="alert">
+            <i class="bi bi-x-octagon-fill me-2"></i> @TempData["MensagemErro"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center shadow-sm">
+            <i class="bi bi-info-circle-fill me-2"></i> Não há solicitações pendentes no momento.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle shadow-sm">
+                <thead class="table-indigo text-white">
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Data da Aula</th>
+                        <th>Justificativa</th>
+                        <th>Data da Solicitação</th>
+                        <th class="text-center">Responder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var s in Model)
+                {
+                    <tr>
+                        <td>@s.NomeAluno</td>
+                        <td>@s.DataAula?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@s.Justificativa</td>
+                        <td>@s.DataSolicitacao.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <form asp-controller="SolicitacoesReagendamento" asp-action="Responder" method="post">
+                                <input type="hidden" name="Id" value="@s.Id" />
+                                <div class="mb-2">
+                                    <textarea name="ObservacaoResposta" class="form-control form-control-sm"
+                                              placeholder="Observações (opcional)" rows="2"></textarea>
+                                </div>
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <button name="acao" value="Aprovar" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-check-circle me-1"></i> Aprovar
+                                    </button>
+                                    <button name="acao" value="Rejeitar" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-x-circle me-1"></i> Rejeitar
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

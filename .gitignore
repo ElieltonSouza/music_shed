@@ -1,0 +1,22 @@
+# Ignore pastas de build e config
+bin/
+obj/
+*.user
+*.suo
+*.log
+
+# Ignorar arquivos sensíveis e gerados
+*.pdb
+*.exe
+*.dll
+*.cache
+*.json
+*.csproj.user
+
+# Visual Studio
+.vscode/
+.vs/
+*.dbmdl
+
+# Outros arquivos temporários
+music_shed.sln.docstates

@@ -1,0 +1,66 @@
+@model music_shed.Models.ViewModel.CadastrarProfessorViewModel
+
+@{
+    ViewData["Title"] = "Cadastrar Professor";
+}
+
+<div class="container d-flex justify-content-center align-items-center mt-5 mb-5">
+    <div class="card shadow-lg p-4" style="max-width: 650px; width: 100%;">
+        <h2 class="text-center text-indigo fw-bold mb-4">
+            <i class="bi bi-person-plus-fill me-2"></i> Cadastrar Novo Professor
+        </h2>
+
+        @if (TempData["MensagemSucesso"] != null)
+        {
+            <div class="alert alert-success text-center">
+                @TempData["MensagemSucesso"]
+            </div>
+        }
+
+        <form asp-action="Cadastrar" method="post" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label asp-for="Nome" class="form-label fw-semibold">Nome completo</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                    <input asp-for="Nome" class="form-control" required />
+                </div>
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-semibold">E-mail</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                    <input asp-for="Email" class="form-control" type="email" required />
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Senha" class="form-label fw-semibold">Senha</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    <input asp-for="Senha" class="form-control" type="password" required />
+                </div>
+                <span asp-validation-for="Senha" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ConfirmarSenha" class="form-label fw-semibold">Confirmar senha</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    <input asp-for="ConfirmarSenha" class="form-control" type="password" required />
+                </div>
+                <span asp-validation-for="ConfirmarSenha" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-indigo w-100 py-2 fs-5">
+                <i class="bi bi-check-circle me-2"></i> Cadastrar Professor
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

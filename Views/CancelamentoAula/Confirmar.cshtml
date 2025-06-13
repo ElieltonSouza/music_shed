@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Cancelar Aula";
+    int agendaId = (int)ViewBag.AgendaId;
+}
+
+@if (TempData["MensagemSucesso"] is string ok && !string.IsNullOrWhiteSpace(ok))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @ok
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+
+<h2 class="mb-4 text-danger"><i class="bi bi-x-circle-fill me-2"></i>Cancelar Aula</h2>
+
+<div class="alert alert-warning shadow-sm">
+    <strong>⚠ Atenção:</strong> Esta ação <u>não pode ser desfeita</u>.<br />
+    A aula será desmarcada imediatamente após a confirmação.
+</div>
+
+<form asp-action="Confirmar" asp-controller="CancelamentoAula" method="post" class="shadow-sm p-4 rounded bg-light">
+    <input type="hidden" name="agendaId" value="@agendaId" />
+
+    <div class="mb-3">
+        <label for="justificativa" class="form-label fw-bold">Justificativa do Cancelamento</label>
+        <textarea class="form-control" name="justificativa" id="justificativa" rows="4" required></textarea>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4">
+        <button type="submit" class="btn btn-danger px-4 me-2">
+            <i class="bi bi-x-circle me-1"></i> Confirmar Cancelamento
+        </button>
+
+        <a asp-action="MinhasAulas" asp-controller="Agendas" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle me-1"></i> Voltar
+        </a>
+    </div>
+</form>

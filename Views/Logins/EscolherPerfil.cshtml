@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Escolher Perfil";
+}
+
+<div class="container d-flex justify-content-center align-items-center mt-5 mb-5">
+    <div class="card shadow-lg p-4 text-center" style="max-width: 600px; width: 100%;">
+        <h2 class="text-indigo fw-bold mb-4">
+            <i class="bi bi-person-check-fill me-2"></i> Como você deseja entrar?
+        </h2>
+
+        <p class="text-muted mb-4">Escolha uma opção para acessar o sistema:</p>
+
+        <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+            <a asp-controller="Logins" asp-action="Entrar" asp-route-perfil="Aluno"
+               class="btn btn-outline-indigo btn-lg d-flex align-items-center justify-content-center px-4 py-2">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+                     alt="Google" width="24" height="24" class="me-2">
+                Entrar como Aluno (Google)
+            </a>
+
+            <a asp-controller="Logins" asp-action="Entrar" asp-route-perfil="Professor"
+               class="btn btn-warning btn-lg d-flex align-items-center justify-content-center px-4 py-2">
+                <i class="bi bi-person-badge me-2"></i> Entrar como Professor
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,86 @@
+@model IEnumerable<music_shed.Models.SolicitacaoReagendamento>
+
+@{
+    ViewData["Title"] = "Solicitações Pendentes";
+}
+
+<h2 class="mb-4">📬 Solicitações de Reagendamento Pendentes</h2>
+
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["MensagemSucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Nenhuma solicitação pendente no momento.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped shadow-sm">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>Aluno</th>
+                    <th>Data da Aula</th>
+                    <th>Data da Solicitação</th>
+                    <th>Justificativa</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.NomeAluno</td>
+                        <td>@item.DataAula?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.DataSolicitacao.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.Justificativa</td>
+                        <td>
+                            <div class="d-flex flex-column gap-1">
+                                <form asp-action="Responder" method="post">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="hidden" name="acao" value="Aprovar" />
+                                    <input type="text" name="observacaoResposta" class="form-control form-control-sm mb-1" placeholder="Observação (opcional)" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success w-100">
+                                        <i class="bi bi-check-circle me-1"></i> Aprovar
+                                    </button>
+                                </form>
+                                <form asp-action="Responder" method="post">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="hidden" name="acao" value="Rejeitar" />
+                                    <input type="text" name="observacaoResposta" class="form-control form-control-sm mb-1" placeholder="Observação (opcional)" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                                        <i class="bi bi-x-circle me-1"></i> Rejeitar
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link">Anterior</a>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Próximo</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}

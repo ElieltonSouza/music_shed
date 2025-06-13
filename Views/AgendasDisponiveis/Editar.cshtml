@@ -1,0 +1,112 @@
+@model music_shed.Models.ViewModel.NovaAgendaViewModel
+
+@{
+    ViewData["Title"] = "Editar Agenda";
+}
+
+<div class="container d-flex justify-content-center align-items-center mt-5 mb-5">
+    <div class="card shadow-lg p-4 w-100" style="max-width: 750px;">
+        <h2 class="text-center text-indigo fw-bold mb-4">
+            <i class="bi bi-pencil-fill me-2"></i> Editar Agenda
+        </h2>
+
+        @if (ViewData.ModelState.ErrorCount > 0)
+        {
+            <div class="alert alert-danger text-center shadow-sm">
+                <i class="bi bi-exclamation-circle-fill me-2"></i> Corrija os erros abaixo antes de continuar.
+            </div>
+        }
+
+        <form asp-action="Editar" method="post" class="needs-validation" novalidate>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label asp-for="DataHora" class="form-label fw-semibold">Data e Hora de Início</label>
+                <input asp-for="DataHora" class="form-control" type="datetime-local"
+                       value="@Model.DataHora?.ToString("yyyy-MM-ddTHH:mm")" required />
+                <span asp-validation-for="DataHora" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="HoraFim" class="form-label fw-semibold">Data e Hora de Término</label>
+                <input asp-for="HoraFim" class="form-control" type="datetime-local"
+                       value="@Model.HoraFim?.ToString("yyyy-MM-ddTHH:mm")" required />
+                <span asp-validation-for="HoraFim" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="TipoAula" class="form-label fw-semibold">Tipo de Aula</label>
+                <select asp-for="TipoAula" class="form-select" required>
+                    <option value="">Selecione...</option>
+                    <option value="Particular" selected="@("Particular" == Model.TipoAula)">Particular</option>
+                    <option value="Conjunto" selected="@("Conjunto" == Model.TipoAula)">Conjunto</option>
+                </select>
+                <span asp-validation-for="TipoAula" class="text-danger"></span>
+            </div>
+
+            <!-- Alunos colapsável -->
+            <div class="mb-4">
+                <button class="btn btn-outline-primary w-100 d-flex justify-content-between align-items-center"
+                        type="button" data-bs-toggle="collapse" data-bs-target="#alunosCollapse" aria-expanded="false" aria-controls="alunosCollapse">
+                    <span><i class="bi bi-people-fill me-2"></i> Alunos Selecionados</span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+
+                <div class="collapse mt-3" id="alunosCollapse">
+                    <div class="border rounded p-3" style="max-height: 250px; overflow-y: auto;">
+                        @foreach (var aluno in Model.ListaAlunos)
+                        {
+                            var selecionado = Model.AlunosSelecionados.Contains(aluno.Id);
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       name="AlunosSelecionados"
+                                       value="@aluno.Id" id="aluno_@aluno.Id"
+                                       @(selecionado ? "checked" : "") />
+                                <label class="form-check-label" for="aluno_@aluno.Id">@aluno.NomeHash</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Justificativa" class="form-label fw-semibold">Justificativa (para exceções)</label>
+                <textarea asp-for="Justificativa" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Justificativa" class="text-danger"></span>
+            </div>
+
+            @* Campos ocultos *@
+            <input type="hidden" asp-for="MinutosConfirmacaoPermitida" />
+            <input type="hidden" asp-for="MinutosAntecedenciaCancelamentoAluno" />
+            <input type="hidden" asp-for="MinutosAntecedenciaReagendamentoAluno" />
+
+            <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                <button type="submit" class="btn btn-indigo px-4 py-2">
+                    <i class="bi bi-save me-2"></i> Salvar Alterações
+                </button>
+                <a asp-action="Index" class="btn btn-secondary px-4 py-2">
+                    <i class="bi bi-x-circle me-2"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+}

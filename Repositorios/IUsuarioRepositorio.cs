@@ -1,25 +1,23 @@
 using music_shed.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace music_shed.Repositorios
 {
-    /// <summary>
-    /// Contrato para operações de persistência de usuários no banco de dados.
-    /// </summary>
+    /// <summary>Contrato para operações de persistência de usuários.</summary>
     public interface IUsuarioRepositorio
     {
-        /// <summary>
-        /// Insere um novo usuário no banco de dados.
-        /// </summary>
-        /// <param name="usuario">Objeto contendo os dados do usuário anonimizados.</param>
-        /// <returns>Task assíncrona.</returns>
         Task InserirAsync(Usuario usuario);
-
-        /// <summary>
-        /// Verifica se um usuário já está cadastrado com base no e-mail anonimizado (hash).
-        /// </summary>
-        /// <param name="emailHash">Hash do e-mail.</param>
-        /// <returns>Verdadeiro se existir, falso caso contrário.</returns>
         Task<bool> UsuarioJaExisteAsync(string emailHash);
+        Task<Usuario?> ObterPorEmailHashAsync(string emailHash);
+        Task CriarAsync(Usuario usuario, bool incluiSenha = false);
+        Task<IEnumerable<Usuario>> ListarPaginadoAsync(int skip, int take);
+        Task<int> ContarAsync();
+        Task<Usuario?> ObterPorIdAsync(int id);
+        Task AtualizarNomeAsync(int id, string novoNome);
+        Task ExcluirAsync(int id);
+        Task MarcarNomeEditadoManualmenteAsync(int usuarioId);
+        Task<IEnumerable<Usuario>> ListarPorPerfilAsync(string perfil);
+        Task<List<Usuario>> ListarAlunosAssociadosAsync(int professorId);
     }
 }

@@ -1,0 +1,193 @@
+@model IEnumerable<music_shed.Models.AgendaDisponivel>
+
+@{
+    ViewData["Title"] = "Minhas Agendas Disponíveis";
+    var perfil = Context.Session.GetString("Perfil");
+    var usuarioId = Context.Session.GetInt32("UsuarioId");
+}
+
+<h2 class="mb-4 text-center text-indigo fw-bold">
+    <i class="bi bi-calendar-week-fill me-2"></i> Minhas Agendas Disponíveis
+</h2>
+
+@if (TempData["MensagemSucesso"] is string ok && !string.IsNullOrWhiteSpace(ok))
+{
+    <div class="alert alert-success text-center">@ok</div>
+}
+@if (TempData["MensagemErro"] is string erro && !string.IsNullOrWhiteSpace(erro))
+{
+    <div class="alert alert-danger text-center">@erro</div>
+}
+
+<div class="d-flex justify-content-center mb-4">
+    <a class="btn btn-indigo px-4 py-2 shadow-sm" asp-action="Criar">
+        <i class="bi bi-calendar-plus me-2"></i> Nova Agenda
+    </a>
+</div>
+
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">Nenhuma agenda cadastrada ainda.</div>
+}
+else
+{
+    <div class="table-responsive shadow-sm">
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Data</th>
+                    <th>Início</th>
+                    <th>Término</th>
+                    <th>Tipo</th>
+                    <th>IDs Alunos</th> <!-- Agora apenas IDs -->
+                    <th>Exceção?</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var agenda in Model.Take(10)) // simulação de 10 por página
+            {
+                var podeConfirmar = agenda.StatusPresenca != "Presente";
+                var agora = DateTime.Now;
+                var tempoLimite = agenda.DataHora.AddMinutes(agenda.MinutosConfirmacaoPermitida ?? 0);
+                var precisaJustificativa = agora < agenda.DataHora;
+                var expirouPrazo = agora > tempoLimite;
+
+                <tr>
+                    <td>@agenda.DataHora.ToString("dd/MM/yyyy")</td>
+                    <td>@agenda.DataHora.ToString("HH:mm")</td>
+                    <td>@agenda.HoraFim.ToString("HH:mm")</td>
+                    <td>@agenda.TipoAula</td>
+                    <td>
+                        <span class="visually-hidden">@agenda.NomesAlunos</span>
+                        @agenda.AlunosIds
+                    </td>
+                    <td>
+                        @if (agenda.LiberacaoExcepcional)
+                        {
+                            <span class="badge bg-warning text-dark">Sim</span>
+                            @if (!string.IsNullOrEmpty(agenda.Justificativa))
+                            {
+                                <button class="btn btn-sm btn-outline-info ms-2" data-bs-toggle="modal" data-bs-target="#justificativaModal-@agenda.Id">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">Não</span>
+                        }
+                    </td>
+                    <td>
+                        @switch (agenda.StatusPresenca)
+                        {
+                            case "Presente":
+                                <span class="badge bg-success">Presente</span>
+                                break;
+                            case "Faltou":
+                                <span class="badge bg-danger">Faltou</span>
+                                break;
+                            default:
+                                if (agenda.StatusAula == "CanceladaPeloAluno")
+                                {
+                                    <span class="badge bg-warning text-dark">Cancelada pelo aluno</span>
+                                }
+                                else if (agenda.StatusAula == "CanceladaPeloProfessor")
+                                {
+                                    <span class="badge bg-warning text-dark">Cancelada pelo professor</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">A Confirmar</span>
+                                }
+                                break;
+                        }
+                    </td>
+                    <td>
+                        @if (perfil == "Administrador" || agenda.ProfessorId == usuarioId)
+                        {
+                            <a asp-action="Editar" asp-route-id="@agenda.Id" class="btn btn-sm btn-outline-primary me-1">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a asp-action="Excluir" asp-route-id="@agenda.Id" class="btn btn-sm btn-outline-danger me-1">
+                                <i class="bi bi-trash"></i>
+                            </a>
+
+                            @if (podeConfirmar && agenda.StatusAula != "CanceladaPeloAluno" && agenda.StatusAula != "CanceladaPeloProfessor")
+                            {
+                                <form asp-controller="Presencas" asp-action="Confirmar" method="post" style="display:inline;">
+                                    <input type="hidden" name="agendaId" value="@agenda.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success me-1">
+                                        <i class="bi bi-check2-circle"></i> Confirmar
+                                    </button>
+                                </form>
+                            }
+
+                            @if (agenda.StatusPresenca == "Presente" && agenda.StatusAula != "CanceladaPeloAluno" && agenda.StatusAula != "CanceladaPeloProfessor")
+                            {
+                                <form asp-controller="Presencas" asp-action="Cancelar" method="post" style="display:inline;" onsubmit="return confirm('Deseja cancelar a presença desta aula?');">
+                                    <input type="hidden" name="agendaId" value="@agenda.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-warning me-1">
+                                        <i class="bi bi-x-circle"></i> Cancelar
+                                    </button>
+                                </form>
+                            }
+
+                            @if (agenda.StatusAula != "CanceladaPeloAluno" && agenda.StatusAula != "CanceladaPeloProfessor")
+                            {
+                                <a asp-controller="CancelamentoAula" asp-action="Confirmar" asp-route-agendaId="@agenda.Id" class="btn btn-sm btn-outline-danger me-1">
+                                    <i class="bi bi-x-circle"></i> Cancelar Aula
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginação simulada -->
+    <nav aria-label="Paginação de Agendas">
+        <ul class="pagination justify-content-center mt-4">
+            <li class="page-item disabled">
+                <a class="page-link">Anterior</a>
+            </li>
+            <li class="page-item active">
+                <a class="page-link">1</a>
+            </li>
+            <li class="page-item disabled">
+                <a class="page-link">Próxima</a>
+            </li>
+        </ul>
+    </nav>
+}
+
+<!-- Modais de justificativa -->
+@foreach (var agenda in Model.Where(a => a.LiberacaoExcepcional && !string.IsNullOrEmpty(a.Justificativa)))
+{
+    <div class="modal fade" id="justificativaModal-@agenda.Id" tabindex="-1" aria-labelledby="justificativaModalLabel-@agenda.Id" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Justificativa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">@agenda.Justificativa</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}

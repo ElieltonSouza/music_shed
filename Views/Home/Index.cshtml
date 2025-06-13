@@ -1,5 +1,56 @@
 ﻿@{
     ViewData["Title"] = "Página Inicial";
+    var perfil = Context.Session.GetString("Perfil");
 }
 
-<h2>Bem-vindo ao Sistema Music Shed 🎶</h2>
+@if (TempData["MensagemSucesso"] is string ok && !string.IsNullOrWhiteSpace(ok))
+{
+    <div class="alert alert-success text-center mt-3">@ok</div>
+}
+
+@if (string.IsNullOrEmpty(perfil))
+{
+    <div class="text-center mt-5">
+        <h2 class="fw-bold text-indigo">🎶 Bem-vindo ao MusicShed!</h2>
+        <p class="lead mt-3 text-secondary">Agende, gerencie e acompanhe suas aulas de música.</p>
+        <p class="text-muted">Faça login ou cadastre-se para ter acesso às funcionalidades exclusivas.</p>
+        <a class="btn btn-indigo mt-3 px-4 py-2" asp-controller="Logins" asp-action="EscolherPerfil">
+            <i class="bi bi-box-arrow-in-right me-2"></i> Acessar
+        </a>
+    </div>
+}
+else if (perfil == "Administrador")
+{
+    <div class="text-center mt-5">
+        <h2 class="fw-bold text-indigo">🎩 Administração do Sistema</h2>
+        <p class="lead mt-3 text-secondary">Gerencie usuários e agendas disponíveis para professores.</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+            <a class="btn btn-warning" asp-controller="Usuarios" asp-action="Lista">
+                <i class="bi bi-people"></i> Gerenciar Usuários
+            </a>
+            <a class="btn btn-outline-indigo" asp-controller="AgendasDisponiveis" asp-action="Index">
+                <i class="bi bi-calendar-check"></i> Gerenciar Agendas
+            </a>
+        </div>
+    </div>
+}
+else if (perfil == "Professor")
+{
+    <div class="text-center mt-5">
+        <h2 class="fw-bold text-indigo">🎷 Área do Professor</h2>
+        <p class="lead mt-3 text-secondary">Gerencie sua agenda de aulas com facilidade.</p>
+        <a class="btn btn-outline-indigo mt-3 px-4 py-2" asp-controller="AgendasDisponiveis" asp-action="Index">
+            <i class="bi bi-calendar-check"></i> Gerenciar Agendas
+        </a>
+    </div>
+}
+else if (perfil == "Aluno")
+{
+    <div class="text-center mt-5">
+        <h2 class="fw-bold text-indigo">🎸 Área do Aluno</h2>
+        <p class="lead mt-3 text-secondary">Visualize as agendas disponíveis e acompanhe suas aulas.</p>
+        <a class="btn btn-outline-indigo mt-3 px-4 py-2" asp-controller="AgendasDisponiveis" asp-action="MinhasAulas">
+            <i class="bi bi-calendar-event"></i> Visualizar Agendas
+        </a>
+    </div>
+}

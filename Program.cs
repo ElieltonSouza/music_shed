@@ -6,7 +6,6 @@ using music_shed.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Adiciona autenticação com Google
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -20,17 +19,21 @@ builder.Services.AddAuthentication(options =>
     options.CallbackPath = "/signin-google";
 });
 
-// Registro de serviços e repositórios
 builder.Services.AddScoped<ServicoDeHash>();
 builder.Services.AddScoped<IConnectionFactory, ConnectionFactory>();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+builder.Services.AddScoped<IProfessorRepositorio, ProfessorRepositorio>();
+builder.Services.AddScoped<IAgendaRepositorio, AgendaRepositorio>();
+builder.Services.AddScoped<IAlunoPorProfessorRepositorio, AlunoPorProfessorRepositorio>();
+builder.Services.AddScoped<ISolicitacaoReagendamentoRepositorio, SolicitacaoReagendamentoRepositorio>();
+builder.Services.AddScoped<ICancelamentoAulaRepositorio, CancelamentoAulaRepositorio>();
+builder.Services.AddScoped<IConfiguracaoGlobalRepositorio, ConfiguracaoGlobalRepositorio>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
 var app = builder.Build();
 
-// Configure o pipeline de requisições HTTP
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

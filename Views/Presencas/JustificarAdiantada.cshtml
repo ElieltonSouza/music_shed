@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "Justificar Confirmação Antecipada";
+    var agendaId = ViewBag.AgendaId;
+    var dataHora = ViewBag.DataHora;
+}
+
+<div class="container d-flex justify-content-center align-items-center mt-5 mb-5">
+    <div class="card shadow-lg p-4" style="max-width: 650px; width: 100%;">
+        <h2 class="text-center text-indigo fw-bold mb-3">
+            <i class="bi bi-clock-history me-2"></i> Justificar Confirmação Antecipada
+        </h2>
+
+        @if (ViewBag.MensagemAlerta != null)
+        {
+            <div class="alert alert-warning text-center">
+                @ViewBag.MensagemAlerta
+            </div>
+        }
+
+        <div class="alert alert-warning text-center">
+            Você está tentando confirmar a presença <strong>antes do horário previsto</strong> da aula:
+            <div class="mt-2 fs-5"><i class="bi bi-calendar-event me-1"></i> <strong>@dataHora</strong></div>
+            <p class="mt-3 mb-0">Por favor, informe o motivo abaixo:</p>
+        </div>
+
+        <form asp-action="JustificarAdiantada" method="post" class="mt-4">
+            <input type="hidden" name="agendaId" value="@agendaId" />
+
+            <div class="mb-4">
+                <label for="justificativa" class="form-label fw-semibold">Justificativa</label>
+                <textarea name="justificativa" id="justificativa" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                <button type="submit" class="btn btn-outline-indigo px-4 py-2">
+                    <i class="bi bi-check-circle me-2"></i> Confirmar com Justificativa
+                </button>
+
+                <a asp-controller="AgendasDisponiveis" asp-action="Index"
+                   class="btn btn-secondary px-4 py-2">
+                    <i class="bi bi-arrow-left me-2"></i> Voltar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

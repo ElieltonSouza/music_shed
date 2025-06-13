@@ -12,9 +12,10 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #f9f9fb;
 }
 
-/* Botões com foco */
+/* Foco acessível */
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
@@ -23,7 +24,7 @@ body {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-/* Ajustes de responsividade para a navbar */
+/* Responsividade para botões da navbar */
 .navbar-nav .btn {
   padding: 0.375rem 0.75rem;
   font-size: 0.9rem;
@@ -50,4 +51,159 @@ body {
     text-align: center;
     width: 100%;
   }
+}
+
+/* Customização visual */
+
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-word;
+}
+
+a {
+  color: #0077cc;
+  text-decoration: none;
+}
+a:hover {
+  color: #005fa3;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Footer adaptado */
+.footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 1.5rem;
+  background-color: #4B0082;
+  color: #fff;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+/* Accordion e Cadastros */
+.accordion-button {
+  font-weight: bold;
+}
+.accordion-button:not(.collapsed) {
+  background-color: #e9ecef;
+}
+/* Cores customizadas */
+.text-indigo {
+  color: #4B0082 !important;
+}
+.btn-indigo {
+  background-color: #4B0082;
+  color: #fff;
+  border: 1px solid #4B0082;
+}
+.btn-indigo:hover {
+  background-color: #3a006b;
+  color: #fff;
+}
+.btn-outline-indigo {
+  border-color: #4B0082;
+  color: #4B0082;
+}
+.btn-outline-indigo:hover {
+  background-color: #4B0082;
+  color: #fff;
+}
+
+/* Ajustes de responsividade para seções da Home */
+@media (max-width: 768px) {
+  .text-center h2 {
+    font-size: 1.5rem;
+  }
+
+  .lead {
+    font-size: 1rem;
+  }
+
+  .btn {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+.card {
+  border-radius: 1rem;
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: scale(1.01);
+}
+/* Adicione esta linha abaixo */
+textarea.form-control {
+  resize: none;
+  background-color: #fffefb;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+}
+/* Adicione esta linha abaixo */
+.alert-warning {
+  background-color: #fff9e6;
+  border-color: #ffe58f;
+  color: #7c5b00;
+}
+/* Adicione esta linha abaixo */
+.table-indigo {
+  background-color: #4B0082;
+}
+/* Adicione esta linha abaixo */
+.input-group-text {
+  background-color: #f0eefb;
+  border: 1px solid #ccc;
+}
+/* Adicione esta linha abaixo */
+textarea.form-control {
+  resize: none;
+  background-color: #fffefb;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+.form-check-input:checked {
+  background-color: #4B0082;
+  border-color: #4B0082;
+}
+#alunosCollapse .form-check {
+    margin-bottom: 0.5rem;
+}
+
+button[data-bs-toggle="collapse"] i {
+    transition: transform 0.3s ease;
+}
+
+button[data-bs-toggle="collapse"][aria-expanded="true"] i {
+    transform: rotate(180deg);
 }

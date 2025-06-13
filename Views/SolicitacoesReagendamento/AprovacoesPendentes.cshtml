@@ -1,0 +1,96 @@
+@model IEnumerable<music_shed.Models.SolicitacaoReagendamento>
+
+@{
+    ViewData["Title"] = "Solicitações de Reagendamento";
+}
+
+<div class="container mt-5 mb-5">
+    <h2 class="text-indigo fw-bold mb-4">
+        <i class="bi bi-arrow-repeat me-2"></i> Solicitações de Reagendamento Pendentes
+    </h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center shadow-sm">
+            <i class="bi bi-info-circle-fill me-2"></i> Nenhuma solicitação de reagendamento pendente.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle shadow-sm">
+                <thead class="table-indigo text-white">
+                    <tr>
+                        <th>Data da Aula</th>
+                        <th>Hora Início</th>
+                        <th>Hora Fim</th>
+                        <th>Aluno</th>
+                        <th>Justificativa</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var s in Model)
+                {
+                    <tr>
+                        <td>@s.Agenda?.DataHora.ToString("dd/MM/yyyy")</td>
+                        <td>@s.Agenda?.DataHora.ToString("HH:mm")</td>
+                        <td>@s.Agenda?.HoraFim.ToString("HH:mm")</td>
+                        <td>@s.Aluno?.Nome</td>
+                        <td>@s.Justificativa</td>
+                        <td class="text-nowrap text-center">
+                            <form asp-action="Aprovar" method="post" asp-route-id="@s.Id" class="d-inline">
+                                <button type="submit" class="btn btn-outline-success btn-sm">
+                                    <i class="bi bi-check-circle me-1"></i> Aprovar
+                                </button>
+                            </form>
+                            <button type="button" class="btn btn-outline-danger btn-sm ms-1"
+                                    data-bs-toggle="modal" data-bs-target="#modalRejeitar-@s.Id">
+                                <i class="bi bi-x-circle me-1"></i> Rejeitar
+                            </button>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@* Modais de Rejeição *@
+@foreach (var s in Model)
+{
+    <div class="modal fade" id="modalRejeitar-@s.Id" tabindex="-1" aria-labelledby="modalLabel-@s.Id" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow">
+                <form asp-action="Rejeitar" method="post">
+                    <input type="hidden" name="id" value="@s.Id" />
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="modalLabel-@s.Id">
+                            <i class="bi bi-x-octagon-fill me-2"></i> Rejeitar Solicitação
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="observacao" class="form-label">Motivo da Rejeição</label>
+                            <textarea name="observacao" class="form-control" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-x-circle me-1"></i> Rejeitar
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-arrow-return-left me-1"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}

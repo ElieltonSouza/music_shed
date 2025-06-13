@@ -1,0 +1,45 @@
+@model music_shed.Models.ConfiguracaoGlobal
+
+@{
+    ViewData["Title"] = "Configurações Globais";
+}
+
+<h2 class="mb-4"><i class="bi bi-gear-fill me-2"></i>Configurações Globais</h2>
+
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["MensagemSucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+
+<form asp-action="Editar" method="post" class="shadow-sm p-4 bg-light rounded">
+    <div class="mb-3">
+        <label asp-for="TempoConfirmacaoPresencaMinutos" class="form-label fw-bold"></label>
+        <input asp-for="TempoConfirmacaoPresencaMinutos" class="form-control" />
+        <span asp-validation-for="TempoConfirmacaoPresencaMinutos" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MinutosAntecedenciaCancelamentoAluno" class="form-label fw-bold"></label>
+        <input asp-for="MinutosAntecedenciaCancelamentoAluno" class="form-control" />
+        <span asp-validation-for="MinutosAntecedenciaCancelamentoAluno" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MinutosAntecedenciaReagendamentoAluno" class="form-label fw-bold"></label>
+        <input asp-for="MinutosAntecedenciaReagendamentoAluno" class="form-control" />
+        <span asp-validation-for="MinutosAntecedenciaReagendamentoAluno" class="text-danger small"></span>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4">
+        <button type="submit" class="btn btn-primary px-4">
+            <i class="bi bi-save me-1"></i> Salvar Configurações
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,51 @@
+@model music_shed.Models.AgendaDisponivel
+
+@{
+    ViewData["Title"] = "Confirmar Exclusão";
+}
+
+<div class="container d-flex justify-content-center align-items-center mt-5 mb-5">
+    <div class="card shadow-lg p-4 w-100" style="max-width: 700px;">
+        <h2 class="text-center text-danger fw-bold mb-4">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Exclusão de Agenda
+        </h2>
+
+        <div class="alert alert-warning text-center shadow-sm">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            Tem certeza que deseja excluir esta agenda? Esta ação é <strong>irreversível</strong>.
+        </div>
+
+        <dl class="row mb-4">
+            <dt class="col-sm-4 text-end fw-semibold">Data</dt>
+            <dd class="col-sm-8">@Model.DataHora.ToString("dd/MM/yyyy")</dd>
+
+            <dt class="col-sm-4 text-end fw-semibold">Horário de Início</dt>
+            <dd class="col-sm-8">@Model.DataHora.ToString("HH:mm")</dd>
+
+            <dt class="col-sm-4 text-end fw-semibold">Horário de Término</dt>
+            <dd class="col-sm-8">@Model.HoraFim.ToString("HH:mm")</dd>
+
+            <dt class="col-sm-4 text-end fw-semibold">Tipo de Aula</dt>
+            <dd class="col-sm-8">@Model.TipoAula</dd>
+
+            <dt class="col-sm-4 text-end fw-semibold">IDs dos Alunos</dt>
+            <dd class="col-sm-8">@Model.AlunosIds</dd>
+
+            @if (Model.LiberacaoExcepcional)
+            {
+                <dt class="col-sm-4 text-end fw-semibold">Justificativa</dt>
+                <dd class="col-sm-8">@Model.Justificativa</dd>
+            }
+        </dl>
+
+        <form asp-action="Excluir" method="post" class="d-flex flex-column flex-md-row justify-content-center gap-3">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger px-4 py-2">
+                <i class="bi bi-trash-fill me-2"></i> Confirmar Exclusão
+            </button>
+            <a asp-action="Index" class="btn btn-secondary px-4 py-2">
+                <i class="bi bi-x-circle me-2"></i> Cancelar
+            </a>
+        </form>
+    </div>
+</div>

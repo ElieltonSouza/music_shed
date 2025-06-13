@@ -1,0 +1,33 @@
+@model music_shed.Models.Usuario
+@{
+    ViewData["Title"] = "Confirmar Exclusão";
+}
+
+<div class="container d-flex justify-content-center align-items-center mt-5 mb-5">
+    <div class="card shadow-lg p-4 text-center" style="max-width: 600px; width: 100%;">
+        <h2 class="text-danger fw-bold mb-3">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Exclusão
+        </h2>
+
+        <div class="alert alert-warning text-start">
+            <strong>Atenção!</strong> Você está prestes a excluir o usuário:
+            <br />
+            <span class="fw-bold text-indigo">@Model.NomeHash</span> (ID @Model.Id).
+            <br />
+            <span class="text-danger fw-semibold">Essa operação é irreversível.</span>
+        </div>
+
+        <form asp-action="Excluir" method="post" class="mt-4">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                <button type="submit" class="btn btn-danger px-4 py-2">
+                    <i class="bi bi-trash-fill me-2"></i> Confirmar Exclusão
+                </button>
+                <a asp-action="Lista" class="btn btn-secondary px-4 py-2">
+                    <i class="bi bi-arrow-left-circle me-2"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

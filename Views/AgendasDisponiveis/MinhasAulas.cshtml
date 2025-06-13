@@ -1,0 +1,157 @@
+@model IEnumerable<music_shed.Models.ViewModel.MinhasAulasViewModel>
+
+@{
+    ViewData["Title"] = "Minhas Aulas Agendadas";
+}
+
+<h2 class="mb-4">🎼 Minhas Aulas Agendadas</h2>
+
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["MensagemSucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+@if (TempData["MensagemErro"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["MensagemErro"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Você ainda não possui nenhuma aula agendada.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Data</th>
+                <th>Início</th>
+                <th>Término</th>
+                @* Campo de participantes ocultado *@
+                <th style="display: none;">Participantes</th>
+                <th>Tipo</th>
+                <th>Exceção?</th>
+                <th>Presença</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var aula in Model)
+            {
+                <tr>
+                    <td>@aula.DataHora.ToString("dd/MM/yyyy")</td>
+                    <td>@aula.DataHora.ToString("HH:mm")</td>
+                    <td>@aula.HoraFim.ToString("HH:mm")</td>
+
+                    @* Participantes oculto visualmente *@
+                    <td style="display: none;">@aula.NomesAlunos</td>
+
+                    <td>@aula.TipoAula</td>
+                    <td>
+                        @if (aula.LiberacaoExcepcional)
+                        {
+                            <span class="badge bg-warning text-dark">Sim</span>
+                            @if (!string.IsNullOrWhiteSpace(aula.Justificativa))
+                            {
+                                <button type="button" class="btn btn-sm btn-outline-info ms-2"
+                                        data-bs-toggle="modal" data-bs-target="#justificativaModal-@aula.Id">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">Não</span>
+                        }
+                    </td>
+                    <td>
+                        @if (aula.StatusAula == "Cancelada")
+                        {
+                            <span class="badge bg-warning text-dark">Cancelada</span>
+                        }
+                        else if (aula.StatusPresenca == "Presente")
+                        {
+                            <span class="badge bg-success">Presente</span>
+                        }
+                        else if (aula.StatusPresenca == "Faltou")
+                        {
+                            <span class="badge bg-danger">Faltou</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">A Confirmar</span>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(aula.JustificativaPresencaAntecipada))
+                        {
+                            <div class="mt-1 text-muted" style="font-size: 0.8rem;">
+                                Justificativa: @aula.JustificativaPresencaAntecipada
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        @if (aula.PodeSolicitarReagendamento && !aula.JaSolicitouReagendamento)
+                        {
+                            <a asp-controller="SolicitacoesReagendamento"
+                               asp-action="Nova"
+                               asp-route-agendaId="@aula.Id"
+                               class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-arrow-repeat"></i> Reagendar
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">N/A</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link">Anterior</a>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Próximo</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}
+
+@foreach (var aula in Model.Where(a => a.LiberacaoExcepcional && !string.IsNullOrWhiteSpace(a.Justificativa)))
+{
+    <div class="modal fade" id="justificativaModal-@aula.Id" tabindex="-1" aria-labelledby="modalLabel-@aula.Id" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel-@aula.Id">Justificativa da Aula Excepcional</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    @aula.Justificativa
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}
